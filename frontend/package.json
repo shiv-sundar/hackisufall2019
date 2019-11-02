@@ -3,10 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@google/markerclusterer": "^2.0.0",
+    "@google/markerclustererplus": "^3.0.1",
     "google-map-react": "^1.1.5",
+    "googlemaps-v3-utility-library": "^1.0.1",
+    "googlemaps-v3-utility-library-latest": "^1.0.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "typescript": "^3.6.4"
   },
   "scripts": {
     "start": "react-scripts start",

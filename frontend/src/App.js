@@ -4,17 +4,26 @@ import './App.css';
 import Map from './components/map';
 import InfoSheet from './components/infosheet';
 
-function App() {
-  return (
-    <div className="App" style={styles.container}>
-      <div style={styles.map}>
+class App extends React.Component {
+  
+
+  getData = (data) => {
+    this.setState({supplies: data});
+  }
+  render(){
+    return (
+      <div className="App" style={styles.container}>
         <Map/>
+        {/* <div style={styles.map}>
+          <Map onClusterClick={this.getData.bind(this)}/>
+        </div>
+        <div style={styles.info}>
+          <InfoSheet/>
+        </div> */}
       </div>
-      <div style={styles.info}>
-        <InfoSheet/>
-      </div>
-    </div>
-  );
+    );
+  }
+  
 }
 
 var styles = {
