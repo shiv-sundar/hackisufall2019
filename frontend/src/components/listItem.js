@@ -20,10 +20,10 @@ class ListItem extends React.Component {
             <div style={styles.ListItem}>
                 <h5 style={styles.name}>Name: {this.props.name}</h5>
                 <h5 style={styles.phone}>Contact: {this.props.phone}</h5>
-                <h5 style={styles.needs}>Needs: </h5>
+                <h5 style={styles.needsTitle}>Needs: </h5>
                 <ul style={styles.needs}>
                     {this.props.needs.map(item => (
-                        <li style={styles.needItem}>{item}</li>
+                        <li style={styles.needItem}> {item}</li>
                     ))}
                 </ul>
                 <button style={styles.helpButton} onClick={()=>this.getDirections(this.props.lat,this.props.lng)}>Get Directions</button>
@@ -33,21 +33,35 @@ class ListItem extends React.Component {
 }
 var styles = {
     ListItem: {
-        borderBottom: '1px solid rgba(0, 0, 0, 0.16)',
+        borderBottom: '2px solid rgb(33, 33, 33)',
         paddingBottom: '15px',
-        textAlign: 'left'
+        paddingLeft: '12px',
+        paddingTop: '5px',
+        textAlign: 'left',
+        
     },
     name: {
         padding: 5,
-        margin: 5 
+        margin: 5,
+        paddingTop: 0,
+        fontSize: '20px'
     },
     phone: {
         padding: 5,
-        margin: 5 
+        margin: 5,
+        paddingTop: 0,
+        fontSize: '20px'
+    },
+    needsTitle: {
+        fontSize: '20px',
+        padding: 5,
+        margin: 5,
+        paddingTop: 0
     },
     needs: {
         padding: 5,
-        margin: 5 
+        margin: 5,
+        paddingTop: 0
     },
     needItem: {
         paddingLeft: 5,
@@ -55,11 +69,10 @@ var styles = {
         listStyleType: 'none'
     },
     helpButton: {
-        paddingLeft: 5,
-        marginLeft: 15,
+        marginLeft: ,
         background: 'transparent',
         border: 'none',
-        color: '#069',
+        color: 'rgb(75, 160, 232)',
         textDecoration: 'underline',
         cursor: 'pointer'
         

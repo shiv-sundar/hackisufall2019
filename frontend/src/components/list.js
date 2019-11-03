@@ -6,10 +6,7 @@ class List extends React.Component {
         super(props);
     }
     render() {
-        console.log(this.props.data);
-        console.log("info");
         let data = this.props.data;
-        console.log(data);
         return (
             <ul style={styles.list}>
                 {data.map((item, index) => (
@@ -28,6 +25,7 @@ class List extends React.Component {
 var styles = {
     list: {
         paddingLeft: 0,
+        background: '#33353e'
     }
 }
 export default List;
