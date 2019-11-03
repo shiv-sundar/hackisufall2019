@@ -69,7 +69,7 @@ var styles = {
         listStyleType: 'none'
     },
     helpButton: {
-        marginLeft: ,
+        marginLeft: 10,
         background: 'transparent',
         border: 'none',
         color: 'rgb(75, 160, 232)',
