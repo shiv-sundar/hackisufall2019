@@ -11,6 +11,7 @@ class List extends React.Component {
             <ul style={styles.list}>
                 {data.map((item, index) => (
                     <ListItem key={index} 
+                    marker={item.marker}
                         id={item.id}
                         rev={item.rev}
                         name={item.name} 
@@ -18,7 +19,7 @@ class List extends React.Component {
                         needs={item.needs} 
                         lat={item.lat}
                         lng={item.lng}
-                        map={this.props.map}/>
+                        maps={this.props.maps}/>
                 ))}
             </ul>
         )

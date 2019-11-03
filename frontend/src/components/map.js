@@ -90,7 +90,7 @@ class Map extends React.Component {
       }
 
       async handleMap(map,maps){
-        this.setState({map: map});
+        this.setState({map: maps});
         let requestData = await this.store.getAllRequests();
         this.handleHeatMap(requestData,map,maps);
         this.handleMarkerClusters(requestData,map,maps);
@@ -105,6 +105,7 @@ class Map extends React.Component {
         let objs = [];
         data.forEach((d)=>{
           let obj = {
+            marker: d,
             id: d.id,
             rev: d.rev,
             lat: d.lat,
@@ -155,7 +156,7 @@ class Map extends React.Component {
                 </div>
 
                 <div style={styles.info}>
-                    <InfoSheet data={this.state.data}/>
+                    <InfoSheet data={this.state.data} maps={this.state.maps}/>
                 </div>
             </div>
             

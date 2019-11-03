@@ -6,7 +6,13 @@ class ListItem extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            showModal: false
+            showModal: false,
+            cardStyle: {borderBottom: '2px solid rgb(33, 33, 33)',
+                paddingBottom: '15px',
+                paddingLeft: '12px',
+                paddingTop: '5px',
+                textAlign: 'left',
+            }
         }
 
         this.openModal = this.openModal.bind(this);
@@ -24,8 +30,30 @@ class ListItem extends React.Component {
             });
         }        
     }
-    handleHover(){
-        console.log("hovering...");
+    handleHover(marker,maps){
+        if(marker!=undefined){
+            // new maps.event.trigger( marker, 'click' );
+        }
+        
+        let cstyle = {
+            borderBottom: '2px solid rgb(33, 33, 33)',
+            paddingBottom: '15px',
+            paddingLeft: '12px',
+            paddingTop: '5px',
+            textAlign: 'left',
+            background: 'rgb(33, 33, 33)'
+        };
+        this.setState({cardStyle: cstyle});
+    }
+    toggleHover(){
+        let cstyle = {
+            borderBottom: '2px solid rgb(33, 33, 33)',
+            paddingBottom: '15px',
+            paddingLeft: '12px',
+            paddingTop: '5px',
+            textAlign: 'left',
+        };
+        this.setState({cardStyle: cstyle});
     }
     openModal() {
         this.setState({modalIsOpen: true});
@@ -43,7 +71,7 @@ class ListItem extends React.Component {
     }
     render() {
         return (
-            <div style={styles.ListItem} onMouseOver={()=>this.handleHover()}>
+            <div style={this.state.cardStyle} onMouseLeave={()=>this.toggleHover()} onMouseOver={()=>this.handleHover(this.props.marker,this.props.maps)}>
                 <h5 style={styles.name}>Name: {this.props.name}</h5>
                 <h5 style={styles.phone}>Contact: {this.props.phone}</h5>
                 <h5 style={styles.needsTitle}>Needs: </h5>
@@ -83,7 +111,6 @@ class ListItem extends React.Component {
                         </div>
                         
                         <input style={styles.submit} type="submit" value="Submit" />
-                        <button onClick={()=>this.handleSubmit(this.props.id,this.props.rev,"")}>Press me</button>
                     </form>
                     <button onClick={this.closeModal} style={styles.closeBtn}>close</button>
                     </Modal>
@@ -99,6 +126,7 @@ var styles = {
         paddingLeft: '12px',
         paddingTop: '5px',
         textAlign: 'left',
+        
     },
     name: {
         padding: 5,

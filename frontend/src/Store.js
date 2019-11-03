@@ -17,12 +17,13 @@ export default class Store {
                 "rev":rev
             }
           }).then(()=>{
-            console.log("done delteing");
+            this.fetchRequests();
           }).catch(e=>{
               console.log(e);
           })
     }
     fetchRequests = () =>{
+        console.log("fetching");
         return axios({
             url: this.state.base+`getData/getData.json`,
             method: 'get',
@@ -51,6 +52,7 @@ export default class Store {
                 };
                 data.push(o);
             });
+            console.log(data);
             return data;
        })
        .catch (err => console.error(err))
@@ -58,7 +60,9 @@ export default class Store {
         
     }
     async getAllRequests(){
-        if(this.state.data.length == 0){
+        console.log(this.state.data.length);
+        if(this.state.data.length === 0){
+            console.log("need to get requestz");
             return await this.fetchRequests();
         }else{
             return this.state.data;
