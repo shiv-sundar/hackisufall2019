@@ -14,12 +14,6 @@ class App extends React.Component {
     return (
       <div className="App" style={styles.container}>
         <Map/>
-        {/* <div style={styles.map}>
-          <Map onClusterClick={this.getData.bind(this)}/>
-        </div>
-        <div style={styles.info}>
-          <InfoSheet/>
-        </div> */}
       </div>
     );
   }
