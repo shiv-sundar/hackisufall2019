@@ -2,48 +2,8 @@ import React, { Component } from 'react';
 import GoogleMapReact from "google-map-react";
 import MarkerClusterer from "@google/markerclustererplus"
 import InfoSheet from './infosheet'; 
-
-var mockData =[
-  {
-    name: "chaz c",
-    phone: "609-867-5309",
-    needs: ["help with 311", "toilet paper", "floss", "heartburn medicine"],
-    lat: 37.782, 
-    lng: -122.447
-  },
-  {
-    name: "chaz q",
-    phone: "609-867-5308",
-    needs: ["help with 311", "toilet paper", "floss"],
-    lat: 37.782, lng: -122.443
-  },
-  {
-    name: "chaz p",
-    phone: "609-867-5307",
-    needs: ["help with 311", "toilet paper", "floss"],
-    lat: 37.782, lng: -122.439
-  },
-
-  {
-    name: "helen d",
-    phone: "609-867-5307",
-    needs: ["cheez its", "toilet paper", "floss"],
-    lat: 41.619549, lng: -93.598
-  },
-  {
-    name: "helen p",
-    phone: "609-867-5307",
-    needs: ["towels", "toilet paper", "floss"],
-    lat: 41.619549, lng: -93.594
-  },
-  {
-    name: "helen g",
-    phone: "609-867-5307",
-    needs: ["food", "toilet paper", "floss"],
-    lat: 41.619549, lng: -93.590
-  },
-
-]
+import Store from './../Store';
+import ReactDOMServer from 'react-dom/server';
 
 class Map extends React.Component {
     constructor(props){
@@ -52,9 +12,7 @@ class Map extends React.Component {
             data: [],
             maps: null
         }
-    }
-    componentWillMount(){
-      
+        this.store = new Store();
     }
     static defaultProps = {
         center: {
@@ -64,12 +22,9 @@ class Map extends React.Component {
         zoom: 5
       };
 
-      
-      handleMarkers(map,maps){
-        
-        this.setState({map: map});
+      handleHeatMap(requestData,map,maps){
         let latlngarr = [];
-        mockData.forEach((d)=>{
+        requestData.forEach((d)=>{
           let o = new maps.LatLng(d.lat, d.lng);
           latlngarr.push(o);
         });
@@ -78,23 +33,51 @@ class Map extends React.Component {
             options: {
               radius: 20
             }
-          });
+        });
+        heatmap.setMap(map);
+      }
+      getInfoWindowContent(name){
+        const content = (<p>{name}</p>);
+        return content;
+      }
+      handleMarkerClusters(requestData,map,maps){
+        var that = this;
         var markers = [];
-        mockData.forEach((d) => {
-            let o = new maps.Marker({
+        requestData.forEach((d) => {
+            let m = new maps.Marker({
               position: new maps.LatLng(d.lat, d.lng),
               info: d
             });
-            o.setOpacity(0.9);
-            markers.push(o);
+            var infowindow = new maps.InfoWindow({content: ""});
+
+            m.addListener('click', function() {
+              const windowContent = (
+                <div>
+                  <h3>{d.name}</h3>
+                  <h3>{d.phone}</h3>
+                </div>
+              );
+              map.setZoom(10);
+              map.panTo(m.position);
+              const content = ReactDOMServer.renderToString(windowContent);
+              infowindow.setContent(content);
+              infowindow.open(map, m);
+              let single = [];
+              single.push(m);
+              that.setState({data: that.parseData(single)});
+            });
+            m.setOpacity(0.9);
+            markers.push(m);
+
         });
-        heatmap.setMap(map);
+
+        
         var markerCluster = new MarkerClusterer(map, markers,
         {
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
         });
 
-        this.setState({data: this.parseDataDefault(mockData)});
+        this.setState({data: this.parseDataDefault(requestData)});
 
         maps.event.addListener(markerCluster, 'click', function(cluster) {
             let clusterMarkers = cluster.getMarkers();
@@ -105,14 +88,25 @@ class Map extends React.Component {
             this.setState({data: this.parseData(dataToDisplay)});
         }.bind(this))
       }
+
+      async handleMap(map,maps){
+        this.setState({map: map});
+        let requestData = await this.store.getAllRequests();
+        this.handleHeatMap(requestData,map,maps);
+        this.handleMarkerClusters(requestData,map,maps);
+      }
       
       handleApiLoaded = (map, maps) => {
-        this.handleMarkers(map,maps);
+        this.handleMap(map,maps);
       };
+
+      /* All data */
       parseDataDefault(data){
         let objs = [];
         data.forEach((d)=>{
           let obj = {
+            id: d.id,
+            rev: d.rev,
             lat: d.lat,
             lng: d.lng,
             name: d.name,
@@ -123,10 +117,15 @@ class Map extends React.Component {
         });
         return objs;
       }
+
+      /* Clustered data */
       parseData(data){
         let objs = [];
         data.forEach((d)=>{
           let obj = {
+            marker: d,
+            id: d.info.id,
+            rev: d.info.rev,
             lat: d.info.lat,
             lng: d.info.lng,
             name: d.info.name,
@@ -137,6 +136,7 @@ class Map extends React.Component {
         });
         return objs;
       }
+
       render() {
         return (
             <div>
@@ -241,19 +241,20 @@ class Map extends React.Component {
         ]
       },
       {
+        "featureType": "administrative.land_parcel",
+        "elementType": "labels",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
         "featureType": "administrative.locality",
         "elementType": "labels.text.fill",
         "stylers": [
           {
             "color": "#bdbdbd"
-          }
-        ]
-      },
-      {
-        "featureType": "administrative.neighborhood",
-        "stylers": [
-          {
-            "visibility": "off"
           }
         ]
       },
@@ -272,14 +273,6 @@ class Map extends React.Component {
         "stylers": [
           {
             "color": "#757575"
-          }
-        ]
-      },
-      {
-        "featureType": "poi.business",
-        "stylers": [
-          {
-            "visibility": "off"
           }
         ]
       },
@@ -321,36 +314,10 @@ class Map extends React.Component {
       },
       {
         "featureType": "road",
-        "elementType": "labels",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "road",
-        "elementType": "labels.icon",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "road",
         "elementType": "labels.text.fill",
         "stylers": [
           {
             "color": "#8a8a8a"
-          }
-        ]
-      },
-      {
-        "featureType": "road.arterial",
-        "stylers": [
-          {
-            "visibility": "off"
           }
         ]
       },
@@ -373,15 +340,6 @@ class Map extends React.Component {
         ]
       },
       {
-        "featureType": "road.highway",
-        "elementType": "labels",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
         "featureType": "road.highway.controlled_access",
         "elementType": "geometry",
         "stylers": [
@@ -392,6 +350,7 @@ class Map extends React.Component {
       },
       {
         "featureType": "road.local",
+        "elementType": "labels",
         "stylers": [
           {
             "visibility": "off"
@@ -404,14 +363,6 @@ class Map extends React.Component {
         "stylers": [
           {
             "color": "#616161"
-          }
-        ]
-      },
-      {
-        "featureType": "transit",
-        "stylers": [
-          {
-            "visibility": "off"
           }
         ]
       },
@@ -430,15 +381,6 @@ class Map extends React.Component {
         "stylers": [
           {
             "color": "#000000"
-          }
-        ]
-      },
-      {
-        "featureType": "water",
-        "elementType": "labels.text",
-        "stylers": [
-          {
-            "visibility": "off"
           }
         ]
       },

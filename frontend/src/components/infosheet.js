@@ -14,6 +14,7 @@ class InfoSheet extends React.Component {
         this.setState({items: this.props.data});
     }
     render() {
+        console.log("look for rev!");
         console.log(this.props.data);
         return (
           <div>

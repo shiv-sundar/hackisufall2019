@@ -11,6 +11,8 @@ class List extends React.Component {
             <ul style={styles.list}>
                 {data.map((item, index) => (
                     <ListItem key={index} 
+                        id={item.id}
+                        rev={item.rev}
                         name={item.name} 
                         phone={item.phone}
                         needs={item.needs} 
