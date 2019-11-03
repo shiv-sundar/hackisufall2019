@@ -6,7 +6,9 @@ import InfoSheet from './components/infosheet';
 
 class App extends React.Component {
   
+  componentDidMount(){
 
+  }
   getData = (data) => {
     this.setState({supplies: data});
   }
