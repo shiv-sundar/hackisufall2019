@@ -5,7 +5,7 @@
   "dependencies": {
     "@google/markerclusterer": "^2.0.0",
     "@google/markerclustererplus": "^3.0.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "google-map-react": "^1.1.5",
     "googlemaps-v3-utility-library": "^1.0.1",
     "googlemaps-v3-utility-library-latest": "^1.0.1",
